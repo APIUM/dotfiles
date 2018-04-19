@@ -18,6 +18,9 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'Shougo/neocomplete.vim'
 Plugin 'vim-airline/vim-airline'
+Plugin 'jiangmiao/auto-pairs'
+Plugin 'lervag/vimtex'
+Plugin 'w0rp/ale'
 
 " Clang completion
 Plugin 'Shougo/vim-marching'
@@ -48,6 +51,31 @@ map <C-n> :NERDTreeToggle<CR>
 let g:neocomplete#enable_at_startup = 1
 " Enable vim-marching
 let g:marching_enable_neocomplete = 1
+" Enable VimTex
+let g:airline#extensions#vimtex#enabled = 1
+
+" State indicators for VimTex
+
+let g:airline#extensions#vimtex#main = ""
+
+" the current tex file is a subfile of the project
+" and the compilation is set for the main file
+let g:airline#extensions#vimtex#sub_main = "m"
+
+"the current tex file is a subfile of the project
+"and the compilation is set for this subfile
+let g:airline#extensions#vimtex#sub_local = "l"
+
+"single compilation is running
+let g:airline#extensions#vimtex#compiled = "c₁"
+
+" continuousr compilation is running
+let g:airline#extensions#vimtex#continuous = "c"
+
+"viewer is opened
+let g:airline#extensions#vimtex#viewer = "v"
+
+
 
 " Enable syntax
 syntax enable
