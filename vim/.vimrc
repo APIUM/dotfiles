@@ -88,6 +88,10 @@ map <leader>ss :setlocal spell!<cr>
 " REMOVE BEEEPS!!!
 :set vb t_vb=
 
+" Compile and run c & c++ code
+map <F5> :w <CR> :!g++ % -o %< && ./%< <CR>
+
+
 """"""""""
 " TO ADD " *maybe
 """"""""""
