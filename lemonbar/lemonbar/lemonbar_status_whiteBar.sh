@@ -8,30 +8,39 @@ battery () {
 
     case "$battery" in
         [0-9]|10)
-            battery="${battery}%  "
+            battery="${battery}%  \uf244"
         ;;
 
         1[0-9]|2[0-5])
-            battery="${battery}%  "
+            battery="${battery}%  \uf243"
         ;;
 
         2[6-9]|3[0-9]|4[0-9]|50)
-            battery="${battery}%  "
+            battery="${battery}%  \uf242"
         ;;
 
         5[1-9]|6[0-9]|7[0-5])
-            battery="${battery}%  "
+            battery="${battery}%  \uf241"
         ;;
 
-        7[6-9]|8[0-9]|9[0-9]|100)
-            battery="${battery}%  "
+        7[6-9]|8[0-9]|9[0-9])
+            battery="${battery}%  \uf240"
         ;;
+		10[0-9]|11[0-9]|12[0-9])
+			battery="Charged"
+		;;
     esac
 
-    [ "$charging" == "Charging" ] && \
-        battery="Charging  $battery"
+	if [ $battery != "Charged" ]
+   		then
+    		[ "$charging" == "Charging" ] && \
+        	battery="Charging  $battery"
+		else
+			$battery="Charged"
+			$batt100 = true
+	fi
 
-    printf "%s" "$battery"
+    printf "%s: %s" "$charging" "$battery"
 }
 
 batttime(){
@@ -55,18 +64,9 @@ batttime(){
 # I have no idea how to do this so this will remain a copy of above until
 # I can use bash...
 battime-ave(){
-    calc(){ printf "%.2f\n" `echo $@ |bc -l`;}
-    charge(){ cat /sys/class/power_supply/BAT0/charge_now;}
-    current(){ cat /sys/class/power_supply/BAT0/current_now;}
-    full(){ cat /sys/class/power_supply/BAT0/charge_full;}
-    charging="$(</sys/class/power_supply/BAT0/status)"
-
-    if [ "$charging" == "Charging" ]
-        then
-            calc "($(full) - $(charge)) / $(current)"
-        else
-            calc $(charge) / $(current)
-    fi 
+	iBatt =$(batttime)
+	# maybne make a thread to do the calc, pass the message through
+	# when the script loads use the instantanous abtt for first 10s
 }
 
 wifi(){
@@ -79,8 +79,41 @@ sound(){
 
 }
 
+soundMute() {
+	amixer sget Master | tail -1 | grep off >/dev/null; return $?
+}
+
+soundOut() {
+	if soundMute; then
+		echo $(sound)" [M]"
+   	else
+		echo $(sound)
+   	fi
+}
+
+wifiSpec() {
+	line=$(connmanctl state | head -1 | cut -f 5 -d " ")
+	out=Error
+	ssid=$(iwgetid | cut -d "\"" -f 2)
+
+	case $line in
+		idle)
+			out=Disconnected
+			;;
+		online)
+			out="Connected"
+			;;
+		ready)
+			out="Connected [R]"
+			;;
+	esac
+
+	echo $out
+}
+
 while :; do
-   echo "%{l}$(wifi)    |    Volume: $(sound)% %{c}$(date "+%a %d %b %l:%M %p")%{r}$(battery)     |     $(batttime) Hours     %{r}"
+	echo -e "%{l}    $(wifiSpec) $(wifiSSID)    |    Volume: $(soundOut) %{c}$(date "+%a %d %b %l:%M %p")%{r}$(battery)     |     $(batttime) Hours     %{r}"
+
 # try to get it to hide of mpv fullscreen
     if [ -z "$WINDOWID" ] ; then
     WINDOWID=$(xdotool search --name bar)
@@ -89,7 +122,7 @@ while :; do
         xprop -id $WINDOWID -f _NET_WM_WINDOW_TYPE 32a -set _NET_WM_WINDOW_TYPE _NET_WM_WINDOW_TYPE_NORMAL
         fi
     fi
-    sleep 2s
+    sleep 1s
 done |
 
-lemonbar -d -b -g "1200x75+1000+30" -f "roboto:size=8" -o 0 -f "fontawesome:size=8" -o 0 -B "#FCFCFC" -F "#2E2E2E" & lemonbar -g 2800x80 -B{#AAFFFFFF} -b
+lemonbar -d -b -g "1200x75+1000+20" -f "Roboto-8" -o 0 -f "fontawesome-8" -o 0 -B "#FCFCFC" -F "#2E2E2E" & lemonbar -g 2800x90 -B{#AAFFFFFF} -b

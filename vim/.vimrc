@@ -16,22 +16,42 @@ Plugin 'gmarik/Vundle.vim'
  
 " Utilities
 Plugin 'scrooloose/nerdtree'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'Shougo/neocomplete.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'lervag/vimtex'
 Plugin 'w0rp/ale'
+Plugin 'terryma/vim-multiple-cursors'
+" LSP 
 
 " Clang completion
-Plugin 'Shougo/vim-marching'
+" Doesn't exist Plugin 'Shougo/vim-marching'
 Plugin 'Shougo/vimproc.vim' " required for vim-marching
 " Python Completion
 Plugin 'davidhalter/jedi-vim'
 
+" LSP
+Plugin 'prabirshrestha/async.vim'
+Plugin 'prabirshrestha/vim-lsp'
+Plugin 'prabirshrestha/asyncomplete.vim'
+
+" cquery LSP
+if executable('cquery')
+	au User lsp_setup call lsp#register_server({
+	      \ 'name': 'cquery',
+	      \ 'cmd': {server_info->['cquery']},
+	      \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
+	      \ 'initialization_options': { 'cacheDirectory': '/tmp/cquery/cache'  },
+	      \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
+	      \ 
+		  \ })
+endif
+
 
 " Writing
-Plugin 'godlygeek/tabular' " required for vim-markdown
-Plugin 'vim-markdown'
+" Plugin 'godlygeek/tabular' " required for vim-markdown
+" Doesn't exist Plugin 'vim-markdown'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -40,7 +60,12 @@ filetype plugin indent on    " required
 " Mapping "
 """""""""""
 
-map <C-n> :NERDTreeToggle<CR>
+" LSP Tab Completion
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
+
+map <C-\> :NERDTreeToggle<CR>
 
 """"""""""""""""
 " Basic Config "
