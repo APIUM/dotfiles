@@ -2,68 +2,78 @@
 " ViM Config "
 """
 """"""""""""""""""""""""
-" VUNDLE AND ETC STUFF "
+" PLUG AND ETC STUFF "
 """"""""""""""""""""""""
 
-" Disable file type for vindle
-filetype off
-" set the runtime path to include V
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-
-" let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
+if empty(glob('~/.vim/autoload/plug.vim'))
+      silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+          \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    endif
+call plug#begin()
  
 " Utilities
-Plugin 'scrooloose/nerdtree'
-Plugin 'Xuyuanp/nerdtree-git-plugin'
-Plugin 'Shougo/neocomplete.vim'
-Plugin 'vim-airline/vim-airline'
-Plugin 'jiangmiao/auto-pairs'
-Plugin 'lervag/vimtex'
-Plugin 'w0rp/ale'
-Plugin 'terryma/vim-multiple-cursors'
+Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'vim-airline/vim-airline'
+Plug 'jiangmiao/auto-pairs'
+Plug 'lervag/vimtex'
+Plug 'w0rp/ale'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'embear/vim-localvimrc' " Allows you to have a per file vimrc
+
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh',
+    \ }
+
+" (Optional) Multi-entry selection UI for LSP
+Plug 'junegunn/fzf'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
+let g:deoplete#enable_at_startup = 1 
+
+" neosnippet
+Plug 'roxma/nvim-yarp'
+Plug 'Shougo/neosnippet.vim'
+Plug 'Shougo/neosnippet-snippets'
+
 " LSP 
 
 " Clang completion
-" Doesn't exist Plugin 'Shougo/vim-marching'
-Plugin 'Shougo/vimproc.vim' " required for vim-marching
+" Plug 'Shougo/vimproc.vim' " required for vim-marching
 " Python Completion
-Plugin 'davidhalter/jedi-vim'
+" Plug 'davidhalter/jedi-vim'
 
 " LSP
-Plugin 'prabirshrestha/async.vim'
-Plugin 'prabirshrestha/vim-lsp'
-Plugin 'prabirshrestha/asyncomplete.vim'
+" Plug 'prabirshrestha/async.vim'
+" Plug 'prabirshrestha/vim-lsp'
+" Plug 'prabirshrestha/asyncomplete.vim'
 
-" cquery LSP
-if executable('cquery')
-	au User lsp_setup call lsp#register_server({
-	      \ 'name': 'cquery',
-	      \ 'cmd': {server_info->['cquery']},
-	      \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
-	      \ 'initialization_options': { 'cacheDirectory': '/tmp/cquery/cache'  },
-	      \ 'whitelist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
-	      \ 
-		  \ })
-endif
+" Initialize plugin system
+call plug#end()
 
 
-" Writing
-" Plugin 'godlygeek/tabular' " required for vim-markdown
-" Doesn't exist Plugin 'vim-markdown'
+""""""""""""""""""""""""
+" LSP
+""""""""""""""""""""""""
 
-call vundle#end()            " required
-filetype plugin indent on    " required
+let g:LanguageClient_serverCommands = {
+			\ 'cpp': ['cquery', 
+			\ '--log-file=/tmp/cq.log', 
+			\ '--init={"cacheDirectory":"/var/cquery/"}']                                                                                                                                                                              
+			\ }
+" Use an absolute configuration path if you want system-wide settings
+" let g:LanguageClient_settingsPath = '/home/apium/.config/vim/settings.json'"
 
 """""""""""
 " Mapping "
 """""""""""
+set pyxversion=3 " for vim-hug-neovi
 
-" LSP Tab Completion
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<cr>"
+" cquery neosnippet config
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
 
 map <C-\> :NERDTreeToggle<CR>
 
@@ -71,11 +81,9 @@ map <C-\> :NERDTreeToggle<CR>
 " Basic Config "
 """"""""""""""""
 
-" Neocomplete Options
-" Enable Neocomplete
-let g:neocomplete#enable_at_startup = 1
-" Enable vim-marching
-let g:marching_enable_neocomplete = 1
+" Deoplete Options
+" Enable deoplete
+let g:deoplete#enable_at_startup = 1
 " Enable VimTex
 let g:airline#extensions#vimtex#enabled = 1
 
@@ -143,6 +151,10 @@ map <leader>ss :setlocal spell!<cr>
 
 " Compile and run c & c++ code
 map <F5> :w <CR> :!g++ % -o %< && ./%< <CR>
+
+" local vimrc
+let g:localvimrc_persistent = 1 " when asked about config loads, capitals are persistant
+let g:localvimrc_sandbox = 0 " don't load in sandbox
 
 
 """"""""""
