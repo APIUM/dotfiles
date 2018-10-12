@@ -30,6 +30,7 @@ Plug 'autozimu/LanguageClient-neovim', {
 " (Optional) Multi-entry selection UI for LSP
 Plug 'junegunn/fzf'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
+Plug 'roxma/vim-hug-neovim-rpc'
 let g:deoplete#enable_at_startup = 1 
 
 " neosnippet
@@ -60,7 +61,7 @@ call plug#end()
 let g:LanguageClient_serverCommands = {
 			\ 'cpp': ['cquery', 
 			\ '--log-file=/tmp/cq.log', 
-			\ '--init={"cacheDirectory":"/var/cquery/"}']                                                                                                                                                                              
+			\ '--init={"cacheDirectory":"/home/apium/var/cquery/"}']                                                                                                                                                                              
 			\ }
 " Use an absolute configuration path if you want system-wide settings
 " let g:LanguageClient_settingsPath = '/home/apium/.config/vim/settings.json'"
