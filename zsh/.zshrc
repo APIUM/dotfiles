@@ -46,3 +46,7 @@ export PATH=$PATH:/home/apium/.gem/ruby/2.4.0/bin
 
 # To add support for TTYs this line can be optionally added.
 #source ~/.cache/wal/colors-tty.sh
+
+# Remove beeep
+setopt NO_BEEP
+bindkey "^[s" insert-sudo

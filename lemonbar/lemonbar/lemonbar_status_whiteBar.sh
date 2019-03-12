@@ -69,6 +69,11 @@ battime-ave(){
 	# when the script loads use the instantanous abtt for first 10s
 }
 
+i3-current(){
+name=$(i3-msg -t get_workspaces |  jq '.[] | select(.focused==true).name' | cut -d"\"" -f2)
+ echo $name
+}
+
 wifi(){
     ping -c 1 8.8.8.8 >/dev/null 2>&1 && echo "   Connected" || echo "   Disconnected"    
 }
@@ -111,8 +116,21 @@ wifiSpec() {
 	echo $out
 }
 
+
+wifiSpecNetMan() {
+	#line=$(nmcli -o | grep "wlp58s0" | head -1 | awk 'NF>1{print $NF}')
+	line=$(nmcli device show | grep GENERAL.CONNECTION | head -1 | awk -F ':' '{print $2}' | sed "s/^[ \t]*//" )
+
+	if [ "$line" != "--" ] 
+	then
+		echo $line
+	else
+		echo "Disconnected"
+	fi
+}
+
 while :; do
-	echo -e "%{l}    $(wifiSpec) $(wifiSSID)    |    Volume: $(soundOut) %{c}$(date "+%a %d %b %l:%M %p")%{r}$(battery)     |     $(batttime) Hours     %{r}"
+	echo -e "%{l}    $(i3-current)   |   $(wifiSpecNetMan)    |    Volume: $(soundOut)%{c}$(date "+%a %d %b %l:%M %p") %{r}$(battery)     |     $(batttime) Hours     %{r}"
 
 # try to get it to hide of mpv fullscreen
     if [ -z "$WINDOWID" ] ; then
