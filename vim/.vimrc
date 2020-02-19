@@ -1,8 +1,12 @@
-"""
+""""""""""""""""""""""""
 " ViM Config "
-"""
+"
 """"""""""""""""""""""""
 " PLUG AND ETC STUFF "
+"
+""""""""""""""""""""""""
+" To install, run :PlugInstall within vim
+"
 """"""""""""""""""""""""
 
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -21,6 +25,8 @@ Plug 'lervag/vimtex'
 Plug 'w0rp/ale'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'embear/vim-localvimrc' " Allows you to have a per file vimrc
+Plug 'junegunn/fzf'
+Plug 'tpope/vim-commentary' " Allows easy block commenting
 
 Plug 'autozimu/LanguageClient-neovim', {
     \ 'branch': 'next',
@@ -28,9 +34,8 @@ Plug 'autozimu/LanguageClient-neovim', {
     \ }
 
 " (Optional) Multi-entry selection UI for LSP
-Plug 'junegunn/fzf'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
-Plug 'roxma/vim-hug-neovim-rpc'
+"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins'  }
+"Plug 'roxma/vim-hug-neovim-rpc'
 let g:deoplete#enable_at_startup = 1 
 
 " neosnippet
@@ -69,7 +74,8 @@ let g:LanguageClient_serverCommands = {
 """""""""""
 " Mapping "
 """""""""""
-set pyxversion=3 " for vim-hug-neovi
+" This is causing errors
+"set pyxversion=3 " for vim-hug-neovi
 
 " cquery neosnippet config
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
@@ -77,6 +83,12 @@ smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 xmap <C-k>     <Plug>(neosnippet_expand_target)
 
 map <C-\> :NERDTreeToggle<CR>
+
+xnoremap <C-_> gc
+map <C-_> gcc
+
+xnoremap <Tab> >gv
+xnoremap <S-Tab> <gv
 
 """"""""""""""""
 " Basic Config "
@@ -156,6 +168,9 @@ map <F5> :w <CR> :!g++ % -o %< && ./%< <CR>
 " local vimrc
 let g:localvimrc_persistent = 1 " when asked about config loads, capitals are persistant
 let g:localvimrc_sandbox = 0 " don't load in sandbox
+
+" Make visual mode highlighting work with a dark background
+highlight Visual cterm=reverse ctermbg=NONE
 
 
 """"""""""
